@@ -2,8 +2,8 @@ package com.kerrrusha;
 
 import org.junit.Test;
 
-import static com.kerrrusha.Util.factorial;
-import static com.kerrrusha.Util.getRandomInt;
+import static com.kerrrusha.util.TaskUtil.factorial;
+import static com.kerrrusha.util.TaskUtil.getRandomInt;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilTest {
