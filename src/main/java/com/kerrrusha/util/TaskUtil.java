@@ -1,10 +1,10 @@
-package com.kerrrusha;
+package com.kerrrusha.util;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class Util {
+public class TaskUtil {
 
     public static int getRandomInt(int fromInclusive, int toExclusive) {
         return new Random().nextInt(toExclusive - fromInclusive) + fromInclusive;
