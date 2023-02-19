@@ -11,6 +11,7 @@ public class Task {
 
     private final int n;
     private final int m;
+    private final ScheduleType scheduleType;
     private final List<ScheduleElement> schedule;
 
     @Override
@@ -18,6 +19,7 @@ public class Task {
         return "Task{" +
                 "n=" + n +
                 ", m=" + m +
+                ", scheduleType=" + scheduleType +
                 ", schedule=" + schedule +
                 '}';
     }

@@ -1,6 +1,7 @@
 package com.kerrrusha;
 
 import com.kerrrusha.model.ScheduleElement;
+import com.kerrrusha.model.ScheduleType;
 import com.kerrrusha.model.Task;
 import com.kerrrusha.solving.TaskSolver;
 
@@ -24,7 +25,10 @@ public class Main {
     }
 
     private static void solveExample() {
-        Task example = new Task(5, 1, List.of(
+        Task example = new Task(5,
+                1,
+                ScheduleType.MAX_SUM_ENDING_TIME,
+                List.of(
                 new ScheduleElement(4, 9, 26, 1),
                 new ScheduleElement(2, 14, 34, 2),
                 new ScheduleElement(3, 10, 33, 3),
