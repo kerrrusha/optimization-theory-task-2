@@ -40,8 +40,8 @@ public class TaskToMoodleXmlConverter {
         this.task = task;
         this.possibleAnswerList = possibleAnswerList;
 
-        taskName = TaskNameGeneratorUtil.generateTaskName();
-        resultFilename = MoodleXmlFilenameGeneratorUtil.generateFilename();
+        taskName = TaskNameGeneratorUtil.generateTaskName(task);
+        resultFilename = MoodleXmlFilenameGeneratorUtil.generateFilename(task);
         moodleXmlTemplate = FileReaderUtil.read("moodle-template.xml");
     }
 

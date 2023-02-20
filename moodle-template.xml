@@ -7,7 +7,7 @@
         <questiontext format="html">
             <text>
                 <![CDATA[<!--[CDATA[<p-->
-                Для системи з \( n={N}, m={M} \) скласти розклад, що має <strong>{SCHEDULE_TYPE}</strong>
+                Для системи з \( n={N}, m={M} \) скласти розклад з <strong>{SCHEDULE_TYPE}</strong>
                 <p></p>
                 Результуючий розклад: {CORRECT_TASK_SCHEDULE_SCHEMA}
                 <br>

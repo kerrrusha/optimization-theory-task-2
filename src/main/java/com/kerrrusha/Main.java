@@ -1,6 +1,6 @@
 package com.kerrrusha;
 
-import com.kerrrusha.generating.PossibleAnswersCreatingUtil;
+import com.kerrrusha.generating.PossibleAnswersCreator;
 import com.kerrrusha.generating.TaskToMoodleXmlConverter;
 import com.kerrrusha.model.MoodlePossibleAnswer;
 import com.kerrrusha.model.Task;
@@ -12,10 +12,10 @@ import static com.kerrrusha.generating.TaskGeneratorUtil.generateAmountOfTasks;
 public class Main {
 
     public static void main(String[] args) {
-        List<Task> tasks = generateAmountOfTasks(1);
+        List<Task> tasks = generateAmountOfTasks(100);
 
         for (Task task : tasks) {
-            List<MoodlePossibleAnswer> possibleAnswerList = PossibleAnswersCreatingUtil.create(task);
+            List<MoodlePossibleAnswer> possibleAnswerList = new PossibleAnswersCreator(task).create();
             new TaskToMoodleXmlConverter(task, possibleAnswerList).createMoodleXmlFile();
         }
     }

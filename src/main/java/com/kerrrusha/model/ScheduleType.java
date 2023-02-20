@@ -1,21 +1,37 @@
 package com.kerrrusha.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import static com.kerrrusha.util.TaskUtil.getRandomInt;
 
-@Getter
-@RequiredArgsConstructor
 public enum ScheduleType {
 
-    MAX_SUM_ENDING_TIME("максимальний сумарний час закінчення"),
-    MIN_SUM_ENDING_TIME("мінімальний сумарний час закінчення");
+    MAX_SUM_ENDING_TIME(
+            "максимальним сумарним часом закінчення",
+                    "максимальним сумарним очікуванням",
+                    "максимальним сумарним часовим зміщення",
+                    "максимальною сумарною тривалістю проходження"
+            ),
+    MIN_SUM_ENDING_TIME(
+            "мінімальним сумарним часом закінчення",
+            "мінімальним сумарним очікуванням",
+            "мінімальним сумарним часовим зміщенням",
+            "мінімальною сумарною тривалістю проходження"
+    );
 
-    private final String printableName;
+    private final String[] printableNames;
+
+    ScheduleType(String... names) {
+        printableNames = names;
+    }
+
+    public String getPrintableName() {
+        int randNameIndex = getRandomInt(0, printableNames.length);
+        return printableNames[randNameIndex];
+    }
 
     @Override
     public String toString() {
         return "ScheduleType{" +
-                "printableName='" + printableName + '\'' +
+                "printableName='" + getPrintableName() + '\'' +
                 '}';
     }
 }
