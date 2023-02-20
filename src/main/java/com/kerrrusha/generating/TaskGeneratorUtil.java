@@ -107,7 +107,7 @@ public class TaskGeneratorUtil {
 
     public static List<Task> generateAmountOfTasks(int amountOfTasksToBeGenerated) {
         List<Task> tasks = new ArrayList<>();
-        for (int i = 0; i <= amountOfTasksToBeGenerated; i++) {
+        for (int i = 0; i < amountOfTasksToBeGenerated; i++) {
             tasks.add(generateSingleTask());
         }
         return tasks;

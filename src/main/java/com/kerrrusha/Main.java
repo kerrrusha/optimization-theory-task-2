@@ -12,7 +12,7 @@ import static com.kerrrusha.generating.TaskGeneratorUtil.generateAmountOfTasks;
 public class Main {
 
     public static void main(String[] args) {
-        List<Task> tasks = generateAmountOfTasks(10);
+        List<Task> tasks = generateAmountOfTasks(1);
 
         for (Task task : tasks) {
             List<MoodlePossibleAnswer> possibleAnswerList = PossibleAnswersCreatingUtil.create(task);

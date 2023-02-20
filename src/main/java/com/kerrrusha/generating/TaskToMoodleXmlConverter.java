@@ -1,11 +1,15 @@
 package com.kerrrusha.generating;
 
 import com.kerrrusha.model.MoodlePossibleAnswer;
+import com.kerrrusha.model.ScheduleElement;
 import com.kerrrusha.model.Task;
 import com.kerrrusha.util.FileReaderUtil;
 import com.kerrrusha.util.FileWriterUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.kerrrusha.util.TaskUtil.getDuplicatingTimeValue;
 
 public class TaskToMoodleXmlConverter {
 
@@ -16,6 +20,12 @@ public class TaskToMoodleXmlConverter {
     private static final String CORRECT_TASK_SCHEDULE_SCHEMA_TAG = "{CORRECT_TASK_SCHEDULE_SCHEMA}";
     private static final String CORRECT_ALT_ANSWERS_COUNT_ID_TAG = "{CORRECT_ALT_ANSWERS_COUNT_ID}";
     private static final String DRAGBOXES_TAG = "{DRAGBOXES}";
+
+    private static final String DRAGBOX_TEMPLATE = """
+            <dragbox>
+                  <text>{ANSWER}</text>
+                  <group>{GROUP}</group>
+                </dragbox>""";
 
     private final Task task;
     private final List<MoodlePossibleAnswer> possibleAnswerList;
@@ -38,26 +48,119 @@ public class TaskToMoodleXmlConverter {
     public void createMoodleXmlFile() {
         if (resultMoodleXml != null) {
             writeResultToFile();
+            return;
         }
 
         resultMoodleXml = moodleXmlTemplate;
+
         setTaskName();
         setN();
         setM();
+        setScheduleType();
+        setCorrectTaskScheduleSchema();
+        setCorrectAltAnswersCountId();
+        setDragboxes();
 
-        //writeResultToFile();
+        writeResultToFile();
+    }
+
+    private void setDragboxes() {
+        setTagValue(DRAGBOXES_TAG, createDragboxes());
+    }
+
+    private String createDragboxes() {
+        StringBuilder result = new StringBuilder();
+
+        for (MoodlePossibleAnswer possibleAnswer : possibleAnswerList) {
+            result.append(createDragbox(possibleAnswer));
+        }
+
+        return result.toString();
+    }
+
+    private String createDragbox(MoodlePossibleAnswer possibleAnswer) {
+        return DRAGBOX_TEMPLATE
+                .replace("{ANSWER}", possibleAnswer.getAnswer())
+                .replace("{GROUP}", possibleAnswer.getPossibleAnswerGroup());
+    }
+
+    private void setCorrectAltAnswersCountId() {
+        setTagValue(CORRECT_ALT_ANSWERS_COUNT_ID_TAG, createCorrectAltAnswersCountIdTag());
+    }
+
+    private String createCorrectAltAnswersCountIdTag() {
+        int id = possibleAnswerList
+                .stream()
+                .filter(e -> e.getAnswer().equals(task.getTaskAnswer().altAnswersCount() + ""))
+                .map(MoodlePossibleAnswer::getId)
+                .findFirst()
+                .orElse(Integer.MIN_VALUE);
+        return possibleAnswerIdToSchemaElement(id);
+    }
+
+    private void setCorrectTaskScheduleSchema() {
+        setTagValue(CORRECT_TASK_SCHEDULE_SCHEMA_TAG, createCorrectTaskScheduleSchemaTag());
+    }
+
+    private String createCorrectTaskScheduleSchemaTag() {
+        StringBuilder result = new StringBuilder();
+
+        List<String> correctTaskSchedule = getCorrectTaskSchedule();
+
+        for (String possibleAnswerText : correctTaskSchedule) {
+            for (MoodlePossibleAnswer possibleAnswer : possibleAnswerList) {
+                if (possibleAnswer.getAnswer().equals(possibleAnswerText)) {
+                    result.append(possibleAnswerIdToSchemaElement(possibleAnswer.getId())).append(" ");
+                }
+            }
+        }
+
+        return result.toString();
+    }
+
+    private List<String> getCorrectTaskSchedule() {
+        int duplicatingTimeValue = getDuplicatingTimeValue(task.getTaskAnswer().schedule());
+        List<String> result = new ArrayList<>();
+
+        List<ScheduleElement> scheduleElements = task.getTaskAnswer().schedule();
+        for (int i = 0; i < scheduleElements.size(); i++) {
+            ScheduleElement scheduleElement = scheduleElements.get(i);
+            if (i == 0 && scheduleElement.getT() == duplicatingTimeValue
+                    || scheduleElement.getT() == duplicatingTimeValue && scheduleElements.get(i - 1).getT() != duplicatingTimeValue) {
+                result.add("(");
+            }
+            result.add(scheduleElement.toShortString());
+            if (i == scheduleElements.size() - 1 && scheduleElement.getT() == duplicatingTimeValue
+                    || scheduleElement.getT() == duplicatingTimeValue && scheduleElements.get(i + 1).getT() != duplicatingTimeValue) {
+                result.add(")");
+            }
+        }
+
+        return result;
+    }
+
+    private void setScheduleType() {
+        setTagValue(SCHEDULE_TYPE_TAG, task.getTaskCondition().getScheduleType().getPrintableName());
     }
 
     private void setTaskName() {
-        resultMoodleXml = resultMoodleXml.replace(TASK_NAME_TAG, taskName);
+        setTagValue(TASK_NAME_TAG, taskName);
     }
 
     private void setN() {
-        resultMoodleXml = resultMoodleXml.replace(M_TAG, task.getTaskCondition().getM() + "");
+        setTagValue(N_TAG, task.getTaskCondition().getN() + "");
     }
 
     private void setM() {
-        resultMoodleXml = resultMoodleXml.replace(N_TAG, task.getTaskCondition().getN() + "");
+        setTagValue(M_TAG, task.getTaskCondition().getM() + "");
+    }
+
+    private void setTagValue(String tag, String value) {
+        resultMoodleXml = resultMoodleXml.replace(tag, value);
+    }
+
+    private String possibleAnswerIdToSchemaElement(int id) {
+        return "[[" + id + "]]";
     }
 
     private void writeResultToFile() {

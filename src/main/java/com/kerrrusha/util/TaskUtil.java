@@ -1,8 +1,12 @@
 package com.kerrrusha.util;
 
+import com.kerrrusha.model.ScheduleElement;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+
+import static java.util.stream.Collectors.toList;
 
 public class TaskUtil {
 
@@ -21,6 +25,17 @@ public class TaskUtil {
                 .stream()
                 .filter(e -> Objects.equals(e, element))
                 .count();
+    }
+
+    public static int getDuplicatingTimeValue(List<ScheduleElement> list) {
+        List<Integer> timeValues = list
+                .stream()
+                .map(ScheduleElement::getT)
+                .collect(toList());
+        return timeValues
+                .stream()
+                .filter(e -> getElementEntriesCount(timeValues, e) > 1)
+                .findFirst().orElse(Integer.MIN_VALUE);
     }
 
 }
