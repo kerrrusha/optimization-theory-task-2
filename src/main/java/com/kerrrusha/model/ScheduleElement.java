@@ -21,4 +21,12 @@ public class ScheduleElement {
                 " / " + u +
                 ')';
     }
+
+    public String toShortString() {
+        return "№" + i +
+                " / " + t +
+                " / " + d +
+                " / " + u;
+    }
+
 }
