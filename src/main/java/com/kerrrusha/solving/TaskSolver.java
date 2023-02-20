@@ -3,6 +3,7 @@ package com.kerrrusha.solving;
 import com.kerrrusha.model.ScheduleElement;
 import com.kerrrusha.model.ScheduleType;
 import com.kerrrusha.model.Task;
+import com.kerrrusha.model.TaskAnswer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -21,22 +22,21 @@ public class TaskSolver {
     @Getter
     private List<ScheduleElement> solved;
 
-    public String solve() {
-        return getSolvedSchedule() + System.lineSeparator() +
-                "Alt answers count: " + getAltAnswersCount();
+    public TaskAnswer solve() {
+        return new TaskAnswer(getSolvedSchedule(),  getAltAnswersCount());
     }
 
     public List<ScheduleElement> getSolvedSchedule() {
         if (nonNull(solved)) {
             return solved;
         }
-        if (task.getScheduleType() == ScheduleType.MAX_SUM_ENDING_TIME) {
-            solved = task.getSchedule().stream()
+        if (task.getTaskCondition().getScheduleType() == ScheduleType.MAX_SUM_ENDING_TIME) {
+            solved = task.getTaskCondition().getInputSchedule().stream()
                     .sorted(Comparator.comparing(ScheduleElement::getI))
                     .sorted(Comparator.comparing(ScheduleElement::getT).reversed())
                     .collect(toList());
         } else {
-            solved = task.getSchedule().stream()
+            solved = task.getTaskCondition().getInputSchedule().stream()
                     .sorted(Comparator.comparing(ScheduleElement::getI))
                     .sorted(Comparator.comparing(ScheduleElement::getT))
                     .collect(toList());
