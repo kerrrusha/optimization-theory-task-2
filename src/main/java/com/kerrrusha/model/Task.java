@@ -1,26 +1,25 @@
 package com.kerrrusha.model;
 
+import com.kerrrusha.solving.TaskSolver;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
 public class Task {
 
-    private final int n;
-    private final int m;
-    private final ScheduleType scheduleType;
-    private final List<ScheduleElement> schedule;
+    private final TaskCondition taskCondition;
+    private final TaskAnswer taskAnswer;
+
+    public Task(TaskCondition taskCondition) {
+        this.taskCondition = taskCondition;
+        this.taskAnswer = new TaskSolver(this).solve();
+        taskCondition.updatePossibleAltAnswerCounts(taskAnswer.altAnswersCount());
+    }
 
     @Override
     public String toString() {
         return "Task{" +
-                "n=" + n +
-                ", m=" + m +
-                ", scheduleType=" + scheduleType +
-                ", schedule=" + schedule +
+                "taskCondition=" + taskCondition +
+                ", taskAnswer=" + taskAnswer +
                 '}';
     }
 }
