@@ -1,37 +1,31 @@
 package com.kerrrusha.model;
 
-import static com.kerrrusha.util.TaskUtil.getRandomInt;
+import lombok.Getter;
 
+import static com.kerrrusha.model.MinOrMax.MAX;
+import static com.kerrrusha.model.MinOrMax.MIN;
+
+@Getter
 public enum ScheduleType {
 
-    MAX_SUM_ENDING_TIME(
-            "максимальним сумарним часом закінчення",
-                    "максимальним сумарним очікуванням",
-                    "максимальним сумарним часовим зміщення",
-                    "максимальною сумарною тривалістю проходження"
-            ),
-    MIN_SUM_ENDING_TIME(
-            "мінімальним сумарним часом закінчення",
-            "мінімальним сумарним очікуванням",
-            "мінімальним сумарним часовим зміщенням",
-            "мінімальною сумарною тривалістю проходження"
-    );
+    MAX_T(MAX, "максимальним сумарним часом закінчення", "T"),
+    MAX_W(MAX, "максимальним сумарним очікуванням", "W"),
+    MAX_L(MAX, "максимальним сумарним часовим зміщення", "L"),
+    MAX_F(MAX, "максимальною сумарною тривалістю проходження", "F"),
 
-    private final String[] printableNames;
+    MIN_T(MIN, "мінімальним сумарним часом закінчення", "T"),
+    MIN_W(MIN, "мінімальним сумарним очікуванням", "W"),
+    MIN_L(MIN, "мінімальним сумарним часовим зміщенням", "L"),
+    MIN_F(MIN, "мінімальною сумарною тривалістю проходження", "F");
 
-    ScheduleType(String... names) {
-        printableNames = names;
+    private final MinOrMax type;
+    private final String criterion;
+    private final String shortCriterion;
+
+    ScheduleType(MinOrMax type, String criterion, String shortCriterion) {
+        this.type = type;
+        this.criterion = criterion;
+        this.shortCriterion = shortCriterion;
     }
 
-    public String getPrintableName() {
-        int randNameIndex = getRandomInt(0, printableNames.length);
-        return printableNames[randNameIndex];
-    }
-
-    @Override
-    public String toString() {
-        return "ScheduleType{" +
-                "printableName='" + getPrintableName() + '\'' +
-                '}';
-    }
 }
