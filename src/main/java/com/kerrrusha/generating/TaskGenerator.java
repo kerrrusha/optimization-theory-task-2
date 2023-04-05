@@ -1,5 +1,6 @@
 package com.kerrrusha.generating;
 
+import com.kerrrusha.config.ConfigReader;
 import com.kerrrusha.model.ScheduleElement;
 import com.kerrrusha.model.ScheduleType;
 import com.kerrrusha.model.Task;
@@ -7,45 +8,63 @@ import com.kerrrusha.model.TaskCondition;
 
 import java.util.*;
 
+import static com.kerrrusha.util.ConverterUtil.toInt;
 import static com.kerrrusha.util.TaskUtil.getElementEntriesCount;
 import static com.kerrrusha.util.TaskUtil.getRandomInt;
 import static java.util.stream.Collectors.toList;
 
-public class TaskGeneratorUtil {
+public class TaskGenerator {
 
-    private static final int EXPECTED_TIME_VALUE_DUPLICATE_GROUPS_AMOUNT = 1;
+    private final int EXPECTED_TIME_VALUE_DUPLICATE_GROUPS_AMOUNT;
 
-    private static final int AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS = 6;
-    private static final int ALT_ANSWER_COUNT_FROM_INCLUSIVE = 1;
-    private static final int ALT_ANSWER_COUNT_TO_EXCLUSIVE = 25;
+    private final int AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS;
+    private final int ALT_ANSWER_COUNT_FROM_INCLUSIVE;
+    private final int ALT_ANSWER_COUNT_TO_EXCLUSIVE;
 
-    private static final int N_FROM_INCLUSIVE = 5;
-    private static final int N_TO_EXCLUSIVE = 8;
+    private final int N_FROM_INCLUSIVE;
+    private final int N_TO_EXCLUSIVE;
 
-    private static final int M_DEFAULT_VALUE = 1;
+    private final int M_DEFAULT_VALUE;
 
-    private static final int T_FROM_INCLUSIVE = 5;
-    private static final int T_TO_INCLUSIVE = 21;
+    private final int T_FROM_INCLUSIVE;
+    private final int T_TO_INCLUSIVE;
 
-    private static final int D_FROM_INCLUSIVE = 20;
-    private static final int D_TO_EXCLUSIVE = 51;
+    private final int D_FROM_INCLUSIVE;
+    private final int D_TO_EXCLUSIVE;
 
-    private static final int U_FROM_INCLUSIVE = 1;
-    private static final int U_TO_INCLUSIVE = 4;
+    private final int U_FROM_INCLUSIVE;
+    private final int U_TO_INCLUSIVE;
 
-    public static Task generateSingleTask() {
-        final int n = getRandomInt(N_FROM_INCLUSIVE, N_TO_EXCLUSIVE);
-        final int m = M_DEFAULT_VALUE;
+    public TaskGenerator() {
+        ConfigReader configReader = new ConfigReader();
+
+        EXPECTED_TIME_VALUE_DUPLICATE_GROUPS_AMOUNT = toInt(configReader.getProperty("EXPECTED_TIME_VALUE_DUPLICATE_GROUPS_AMOUNT"));
+        AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS = toInt(configReader.getProperty("AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS"));
+        ALT_ANSWER_COUNT_FROM_INCLUSIVE = toInt(configReader.getProperty("ALT_ANSWER_COUNT_FROM_INCLUSIVE"));
+        ALT_ANSWER_COUNT_TO_EXCLUSIVE = toInt(configReader.getProperty("ALT_ANSWER_COUNT_TO_EXCLUSIVE"));
+        N_FROM_INCLUSIVE = toInt(configReader.getProperty("N_FROM_INCLUSIVE"));
+        N_TO_EXCLUSIVE = toInt(configReader.getProperty("N_TO_EXCLUSIVE"));
+        M_DEFAULT_VALUE = toInt(configReader.getProperty("M_DEFAULT_VALUE"));
+        T_FROM_INCLUSIVE = toInt(configReader.getProperty("T_FROM_INCLUSIVE"));
+        T_TO_INCLUSIVE = toInt(configReader.getProperty("T_TO_INCLUSIVE"));
+        D_FROM_INCLUSIVE = toInt(configReader.getProperty("D_FROM_INCLUSIVE"));
+        D_TO_EXCLUSIVE = toInt(configReader.getProperty("D_TO_EXCLUSIVE"));
+        U_FROM_INCLUSIVE = toInt(configReader.getProperty("U_FROM_INCLUSIVE"));
+        U_TO_INCLUSIVE = toInt(configReader.getProperty("U_TO_INCLUSIVE"));
+    }
+
+    public Task generateSingleTask() {
+       final int n = getRandomInt(N_FROM_INCLUSIVE, N_TO_EXCLUSIVE);
 
         ScheduleType scheduleType = getRandomScheduleType();
         List<ScheduleElement> schedule = generateSchedule(n);
         List<Integer> possibleAltAnswerCountsExceptCorrectOne = generatePossibleAltAnswerCountsExceptCorrectOne();
 
-        TaskCondition taskCondition = new TaskCondition(n, m, scheduleType, schedule, possibleAltAnswerCountsExceptCorrectOne);
+        TaskCondition taskCondition = new TaskCondition(n, M_DEFAULT_VALUE, scheduleType, schedule, possibleAltAnswerCountsExceptCorrectOne);
         return new Task(taskCondition);
     }
 
-    private static List<Integer> generatePossibleAltAnswerCountsExceptCorrectOne() {
+    private List<Integer> generatePossibleAltAnswerCountsExceptCorrectOne() {
         Set<Integer> result = new HashSet<>();
         for (int i = 1; i < AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS; i++) {
             result.add(getRandomInt(ALT_ANSWER_COUNT_FROM_INCLUSIVE, ALT_ANSWER_COUNT_TO_EXCLUSIVE));
@@ -56,7 +75,7 @@ public class TaskGeneratorUtil {
         return new ArrayList<>(result);
     }
 
-    private static List<ScheduleElement> generateSchedule(int n) {
+    private List<ScheduleElement> generateSchedule(int n) {
         List<ScheduleElement> result = new ArrayList<>();
         do {
             result.clear();
@@ -74,13 +93,13 @@ public class TaskGeneratorUtil {
         return result;
     }
 
-    private static ScheduleType getRandomScheduleType() {
+    private ScheduleType getRandomScheduleType() {
         ScheduleType[] scheduleTypes = ScheduleType.values();
         int randIndex = getRandomInt(0, scheduleTypes.length);
         return scheduleTypes[randIndex];
     }
 
-    private static int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule) {
+    private int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule) {
         List<Integer> timeValues = schedule
                 .stream()
                 .map(ScheduleElement::getT)
@@ -92,7 +111,7 @@ public class TaskGeneratorUtil {
                 .count();
     }
 
-    private static int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule, int newT) {
+    private int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule, int newT) {
         List<Integer> timeValues = schedule
                 .stream()
                 .map(ScheduleElement::getT)
@@ -105,7 +124,7 @@ public class TaskGeneratorUtil {
                 .count();
     }
 
-    public static List<Task> generateAmountOfTasks(int amountOfTasksToBeGenerated) {
+    public List<Task> generateAmountOfTasks(int amountOfTasksToBeGenerated) {
         List<Task> tasks = new ArrayList<>();
         for (int i = 0; i < amountOfTasksToBeGenerated; i++) {
             tasks.add(generateSingleTask());
