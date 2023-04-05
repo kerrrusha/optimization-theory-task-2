@@ -1,14 +1,12 @@
 package com.kerrrusha.solving;
 
-import com.kerrrusha.model.ScheduleElement;
-import com.kerrrusha.model.ScheduleType;
-import com.kerrrusha.model.Task;
-import com.kerrrusha.model.TaskAnswer;
+import com.kerrrusha.model.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 
+import static com.kerrrusha.model.MinOrMax.MAX;
 import static com.kerrrusha.util.TaskUtil.factorial;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -30,7 +28,7 @@ public class TaskSolver {
         if (nonNull(solved)) {
             return solved;
         }
-        if (task.getTaskCondition().getScheduleType() == ScheduleType.MAX_SUM_ENDING_TIME) {
+        if (task.getTaskCondition().getScheduleType().getType() == MAX) {
             solved = task.getTaskCondition().getInputSchedule().stream()
                     .sorted(Comparator.comparing(ScheduleElement::getI))
                     .sorted(Comparator.comparing(ScheduleElement::getT).reversed())
