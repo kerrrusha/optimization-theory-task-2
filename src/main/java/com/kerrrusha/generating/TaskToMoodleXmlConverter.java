@@ -20,38 +20,41 @@ public class TaskToMoodleXmlConverter {
     private static final String CORRECT_TASK_SCHEDULE_SCHEMA_TAG = "{CORRECT_TASK_SCHEDULE_SCHEMA}";
     private static final String CORRECT_ALT_ANSWERS_COUNT_ID_TAG = "{CORRECT_ALT_ANSWERS_COUNT_ID}";
     private static final String DRAGBOXES_TAG = "{DRAGBOXES}";
+    private static final String QUESTIONS_TAG = "{QUESTIONS}";
 
-    private static final String DRAGBOX_TEMPLATE = """
-            <dragbox>
-                  <text>{ANSWER}</text>
-                  <group>{GROUP}</group>
-                </dragbox>""";
+    private static final String DRAGBOX_TEMPLATE = "\n" +
+            "<dragbox>\n" +
+            "      <text>{ANSWER}</text>\n" +
+            "      <group>{GROUP}</group>\n" +
+            "    </dragbox>";
+
+    private static final String resultFilename = "output.xml";
 
     private final Task task;
     private final List<MoodlePossibleAnswer> possibleAnswerList;
 
     private final String taskName;
-    private final String resultFilename;
-    private final String moodleXmlTemplate;
+    private final String questionXmlTemplate;
 
-    private String resultMoodleXml;
+    private String resultQuestionXml;
 
     public TaskToMoodleXmlConverter(Task task, List<MoodlePossibleAnswer> possibleAnswerList) {
         this.task = task;
         this.possibleAnswerList = possibleAnswerList;
 
         taskName = TaskNameGeneratorUtil.generateTaskName(task);
-        resultFilename = MoodleXmlFilenameGeneratorUtil.generateFilename(task);
-        moodleXmlTemplate = FileReaderUtil.read("moodle-template.xml");
+        questionXmlTemplate = FileReaderUtil.read("res/question-template.xml");
     }
 
-    public void createMoodleXmlFile() {
-        if (resultMoodleXml != null) {
-            writeResultToFile();
-            return;
-        }
+    public static void createMoodleXmlFile(String questionsXml) {
+        String outputXml = FileReaderUtil.read("res/quiz-template.xml")
+                .replace(QUESTIONS_TAG, questionsXml);
 
-        resultMoodleXml = moodleXmlTemplate;
+        FileWriterUtil.write(resultFilename, outputXml);
+    }
+
+    public String getMoodleXmlQuestion() {
+        resultQuestionXml = questionXmlTemplate;
 
         setTaskName();
         setN();
@@ -61,7 +64,7 @@ public class TaskToMoodleXmlConverter {
         setCorrectAltAnswersCountId();
         setDragboxes();
 
-        writeResultToFile();
+        return resultQuestionXml;
     }
 
     private void setDragboxes() {
@@ -91,7 +94,7 @@ public class TaskToMoodleXmlConverter {
     private String createCorrectAltAnswersCountIdTag() {
         int id = possibleAnswerList
                 .stream()
-                .filter(e -> e.getAnswer().equals(task.getTaskAnswer().altAnswersCount() + ""))
+                .filter(e -> e.getAnswer().equals(task.getTaskAnswer().getAltAnswersCount() + ""))
                 .map(MoodlePossibleAnswer::getId)
                 .findFirst()
                 .orElse(Integer.MIN_VALUE);
@@ -119,10 +122,10 @@ public class TaskToMoodleXmlConverter {
     }
 
     private List<String> getCorrectTaskSchedule() {
-        int duplicatingTimeValue = getDuplicatingTimeValue(task.getTaskAnswer().schedule());
+        int duplicatingTimeValue = getDuplicatingTimeValue(task.getTaskAnswer().getSchedule());
         List<String> result = new ArrayList<>();
 
-        List<ScheduleElement> scheduleElements = task.getTaskAnswer().schedule();
+        List<ScheduleElement> scheduleElements = task.getTaskAnswer().getSchedule();
         for (int i = 0; i < scheduleElements.size(); i++) {
             ScheduleElement scheduleElement = scheduleElements.get(i);
             if (i == 0 && scheduleElement.getT() == duplicatingTimeValue
@@ -140,7 +143,7 @@ public class TaskToMoodleXmlConverter {
     }
 
     private void setScheduleType() {
-        setTagValue(SCHEDULE_TYPE_TAG, task.getTaskCondition().getScheduleType().getPrintableName());
+        setTagValue(SCHEDULE_TYPE_TAG, task.getTaskCondition().getScheduleType().getCriterion());
     }
 
     private void setTaskName() {
@@ -156,15 +159,11 @@ public class TaskToMoodleXmlConverter {
     }
 
     private void setTagValue(String tag, String value) {
-        resultMoodleXml = resultMoodleXml.replace(tag, value);
+        resultQuestionXml = resultQuestionXml.replace(tag, value);
     }
 
     private String possibleAnswerIdToSchemaElement(int id) {
         return "[[" + id + "]]";
-    }
-
-    private void writeResultToFile() {
-        FileWriterUtil.write(resultFilename, resultMoodleXml);
     }
 
 }
