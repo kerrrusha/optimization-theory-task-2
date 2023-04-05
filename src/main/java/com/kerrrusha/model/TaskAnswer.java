@@ -1,11 +1,18 @@
 package com.kerrrusha.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
-public record TaskAnswer(
-        List<ScheduleElement> schedule,
-        int altAnswersCount
-) {
+@Setter
+@Getter
+@RequiredArgsConstructor
+public class TaskAnswer {
+
+    private final List<ScheduleElement> schedule;
+    private final int altAnswersCount;
 
     @Override
     public String toString() {
