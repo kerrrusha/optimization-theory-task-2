@@ -16,7 +16,7 @@ public class Task {
         this.id = ++objectsCreated;
         this.taskCondition = taskCondition;
         this.taskAnswer = new TaskSolver(this).solve();
-        taskCondition.updatePossibleAltAnswerCounts(taskAnswer.altAnswersCount());
+        taskCondition.updatePossibleAltAnswerCounts(taskAnswer.getAltAnswersCount());
     }
 
     @Override
