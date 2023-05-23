@@ -21,7 +21,7 @@ public class TaskSolver {
     private List<ScheduleElement> solved;
 
     public TaskAnswer solve() {
-        return new TaskAnswer(getSolvedSchedule(),  getAltAnswersCount());
+        return new TaskAnswer(getSolvedSchedule(), getAltAnswersCount());
     }
 
     public List<ScheduleElement> getSolvedSchedule() {
@@ -42,7 +42,7 @@ public class TaskSolver {
         return solved;
     }
 
-    public int getAltAnswersCount() {
+    public String getAltAnswersCount() {
         solveIfNotSolved();
         Map<Integer, Integer> timeValueEntriesToCountMap = getUniqueTimeValues()
                 .stream()

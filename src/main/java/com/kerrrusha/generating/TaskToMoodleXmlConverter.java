@@ -94,7 +94,7 @@ public class TaskToMoodleXmlConverter {
     private String createCorrectAltAnswersCountIdTag() {
         int id = possibleAnswerList
                 .stream()
-                .filter(e -> e.getAnswer().equals(task.getTaskAnswer().getAltAnswersCount() + ""))
+                .filter(e -> e.getAnswer().equals(task.getTaskAnswer().getAltAnswersCount()))
                 .map(MoodlePossibleAnswer::getId)
                 .findFirst()
                 .orElse(Integer.MIN_VALUE);

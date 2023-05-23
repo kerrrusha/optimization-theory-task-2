@@ -12,7 +12,7 @@ import java.util.List;
 public class TaskAnswer {
 
     private final List<ScheduleElement> schedule;
-    private final int altAnswersCount;
+    private final String altAnswersCount;
 
     @Override
     public String toString() {

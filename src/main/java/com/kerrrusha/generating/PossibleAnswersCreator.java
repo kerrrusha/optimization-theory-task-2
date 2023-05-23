@@ -26,9 +26,9 @@ public class PossibleAnswersCreator {
             possibleAnswerList.add(createSingle(scheduleElement.toShortString(), "1"));
         }
 
-        List<Integer> possibleAltAnswerCounts = task.getTaskCondition().getPossibleAltAnswerCounts();
-        for (Integer possibleAltAnswerCount : possibleAltAnswerCounts) {
-            possibleAnswerList.add(createSingle(possibleAltAnswerCount + "", "2"));
+        List<String> possibleAltAnswerCounts = task.getTaskCondition().getPossibleAltAnswerCounts();
+        for (String possibleAltAnswerCount : possibleAltAnswerCounts) {
+            possibleAnswerList.add(createSingle(possibleAltAnswerCount, "2"));
         }
 
         return possibleAnswerList;

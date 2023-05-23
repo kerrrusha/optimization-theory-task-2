@@ -16,9 +16,9 @@ public class TaskCondition {
     private final int m;
     private final ScheduleType scheduleType;
     private final List<ScheduleElement> inputSchedule;
-    private List<Integer> possibleAltAnswerCounts;
+    private List<String> possibleAltAnswerCounts;
 
-    public void updatePossibleAltAnswerCounts(int altAnswersCount) {
+    public void updatePossibleAltAnswerCounts(String altAnswersCount) {
         possibleAltAnswerCounts.add(altAnswersCount);
         possibleAltAnswerCounts = possibleAltAnswerCounts
                 .stream()
