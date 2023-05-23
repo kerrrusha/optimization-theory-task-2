@@ -11,4 +11,12 @@ public class MoodlePossibleAnswer {
     private final String answer;
     private final String possibleAnswerGroup;
 
+    @Override
+    public String toString() {
+        return "MoodlePossibleAnswer{" +
+                "id=" + id +
+                ", answer='" + answer + '\'' +
+                ", possibleAnswerGroup='" + possibleAnswerGroup + '\'' +
+                '}';
+    }
 }
