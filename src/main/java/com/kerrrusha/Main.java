@@ -21,7 +21,9 @@ public class Main {
         StringBuilder questionsXml = new StringBuilder();
         for (Task task : tasks) {
             List<MoodlePossibleAnswer> possibleAnswerList = new PossibleAnswersCreator(task).create();
-            questionsXml.append(new TaskToMoodleXmlConverter(task, possibleAnswerList).getMoodleXmlQuestion()).append(System.lineSeparator());
+            questionsXml
+                    .append(new TaskToMoodleXmlConverter(task, possibleAnswerList).getMoodleXmlQuestion())
+                    .append(System.lineSeparator());
         }
 
         TaskToMoodleXmlConverter.createMoodleXmlFile(questionsXml.toString());
