@@ -15,25 +15,25 @@ import static java.util.stream.Collectors.toList;
 
 public class TaskGenerator {
 
-    private final int EXPECTED_TIME_VALUE_DUPLICATE_GROUPS_AMOUNT;
+    protected final int EXPECTED_TIME_VALUE_DUPLICATE_GROUPS_AMOUNT;
 
-    private final int AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS;
-    private final int ALT_ANSWER_COUNT_FROM_INCLUSIVE;
-    private final int ALT_ANSWER_COUNT_TO_EXCLUSIVE;
+    protected final int AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS;
+    protected final int ALT_ANSWER_COUNT_FROM_INCLUSIVE;
+    protected final int ALT_ANSWER_COUNT_TO_EXCLUSIVE;
 
-    private final int N_FROM_INCLUSIVE;
-    private final int N_TO_EXCLUSIVE;
+    protected final int N_FROM_INCLUSIVE;
+    protected final int N_TO_EXCLUSIVE;
 
-    private final int M_DEFAULT_VALUE;
+    protected final int M_DEFAULT_VALUE;
 
-    private final int T_FROM_INCLUSIVE;
-    private final int T_TO_INCLUSIVE;
+    protected final int T_FROM_INCLUSIVE;
+    protected final int T_TO_INCLUSIVE;
 
-    private final int D_FROM_INCLUSIVE;
-    private final int D_TO_EXCLUSIVE;
+    protected final int D_FROM_INCLUSIVE;
+    protected final int D_TO_EXCLUSIVE;
 
-    private final int U_FROM_INCLUSIVE;
-    private final int U_TO_INCLUSIVE;
+    protected final int U_FROM_INCLUSIVE;
+    protected final int U_TO_INCLUSIVE;
 
     public TaskGenerator() {
         ConfigReader configReader = new ConfigReader();
@@ -55,19 +55,22 @@ public class TaskGenerator {
 
     public Task generateSingleTask() {
        final int n = getRandomInt(N_FROM_INCLUSIVE, N_TO_EXCLUSIVE);
+        return generateSingleTask(n);
+    }
 
+    public Task generateSingleTask(int n) {
         ScheduleType scheduleType = getRandomScheduleType();
         List<ScheduleElement> schedule = generateSchedule(n);
-        List<Integer> possibleAltAnswerCountsExceptCorrectOne = generatePossibleAltAnswerCountsExceptCorrectOne();
+        List<String> possibleAltAnswerCountsExceptCorrectOne = generatePossibleAltAnswerCountsExceptCorrectOne();
 
         TaskCondition taskCondition = new TaskCondition(n, M_DEFAULT_VALUE, scheduleType, schedule, possibleAltAnswerCountsExceptCorrectOne);
         return new Task(taskCondition);
     }
 
-    private List<Integer> generatePossibleAltAnswerCountsExceptCorrectOne() {
-        Set<Integer> result = new HashSet<>();
+    public List<String> generatePossibleAltAnswerCountsExceptCorrectOne() {
+        Set<String> result = new HashSet<>();
         for (int i = 1; i < AMOUNT_OF_POSSIBLE_ALT_ANSWER_COUNTS; i++) {
-            result.add(getRandomInt(ALT_ANSWER_COUNT_FROM_INCLUSIVE, ALT_ANSWER_COUNT_TO_EXCLUSIVE));
+            result.add("" + getRandomInt(ALT_ANSWER_COUNT_FROM_INCLUSIVE, ALT_ANSWER_COUNT_TO_EXCLUSIVE));
             if (result.size() != i) {
                 i -= 1;
             }
@@ -75,7 +78,7 @@ public class TaskGenerator {
         return new ArrayList<>(result);
     }
 
-    private List<ScheduleElement> generateSchedule(int n) {
+    public List<ScheduleElement> generateSchedule(int n) {
         List<ScheduleElement> result = new ArrayList<>();
         do {
             result.clear();
@@ -93,13 +96,13 @@ public class TaskGenerator {
         return result;
     }
 
-    private ScheduleType getRandomScheduleType() {
+    public ScheduleType getRandomScheduleType() {
         ScheduleType[] scheduleTypes = ScheduleType.values();
         int randIndex = getRandomInt(0, scheduleTypes.length);
         return scheduleTypes[randIndex];
     }
 
-    private int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule) {
+    public static int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule) {
         List<Integer> timeValues = schedule
                 .stream()
                 .map(ScheduleElement::getT)
@@ -111,7 +114,7 @@ public class TaskGenerator {
                 .count();
     }
 
-    private int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule, int newT) {
+    public static int getTimeValueDuplicateGroupsAmount(List<ScheduleElement> schedule, int newT) {
         List<Integer> timeValues = schedule
                 .stream()
                 .map(ScheduleElement::getT)
