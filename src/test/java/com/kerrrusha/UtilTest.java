@@ -2,8 +2,7 @@ package com.kerrrusha;
 
 import org.junit.Test;
 
-import static com.kerrrusha.util.TaskUtil.factorial;
-import static com.kerrrusha.util.TaskUtil.getRandomInt;
+import static com.kerrrusha.util.TaskUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilTest {
@@ -20,35 +19,42 @@ public class UtilTest {
     }
 
     @Test
-    public void factorialTest() {
+    public void factorialIntTest() {
         final int n = 3;
         final int expected = 6;
-        final int actual = factorial(n);
+        final int actual = factorialInt(n);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void factorialTest1() {
+    public void factorialIntTest1() {
         final int n = 5;
         final int expected = 120;
-        final int actual = factorial(n);
+        final int actual = factorialInt(n);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void factorialTest2() {
+    public void factorialIntTest2() {
         final int n = 1;
         final int expected = 1;
-        final int actual = factorial(n);
+        final int actual = factorialInt(n);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void factorialTest3() {
+    public void factorialIntTest3() {
         final int n = 0;
         final int expected = 1;
-        final int actual = factorial(n);
+        final int actual = factorialInt(n);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void factorialBigIntTest4() {
+        final int n = 50;
+        final String actual = factorial(n);
+        System.out.println("factorial(" + n + ") = " + actual);
     }
 
 }
