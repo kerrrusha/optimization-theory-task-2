@@ -2,6 +2,7 @@ package com.kerrrusha.util;
 
 import com.kerrrusha.model.ScheduleElement;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -14,10 +15,35 @@ public class TaskUtil {
         return new Random().nextInt(toExclusive - fromInclusive) + fromInclusive;
     }
 
-    public static int factorial(int n) {
+    public static String factorial(int n) {
+        if (n <= 12) {
+            return ""+factorialInt(n);
+        }
+        if (n <= 19) {
+            return ""+factorialLong(n);
+        }
+        return factorialBigInteger(n).toString();
+    }
+
+    public static int factorialInt(int n) {
         return (n == 0)
                 ? 1
-                : (n * factorial(n - 1));
+                : (n * factorialInt(n - 1));
+    }
+
+    public static long factorialLong(long n) {
+        return (n == 0)
+                ? 1
+                : (n * factorialLong(n - 1));
+    }
+
+    public static BigInteger factorialBigInteger(int n)
+    {
+        BigInteger result = BigInteger.valueOf(1);
+        for (int i = 2; i <= n; i++){
+            result = result.multiply(BigInteger.valueOf(i));
+        }
+        return result;
     }
 
     public static <R> int getElementEntriesCount(List<R> list, R element) {
